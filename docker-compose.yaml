@@ -13,16 +13,14 @@ services:
       # Map the host machine's port 7912 to the container's port 8000
       - "7912:8000"
   spoolman_bambu:
-    image: spoolman-bambu-filiment-status:latest
+    image: ghcr.io/atownsend247/spoolman-bambu-filament-status:latest
     restart: unless-stopped
     volumes:
       # Mount the host machine's ./data directory into the container's /home/app/.local/share/spoolman directory
       - type: bind
         source: ./data-spoolman-bambu # This is where the data will be stored locally. Could also be set to for example `source: /home/pi/printer_data/spoolman`.
         target: /home/app/.local/share/spoolman_bambu # Do NOT modify this line
-      - type: bind
-        source: ./client/dist # This is where the data will be stored locally. Could also be set to for example `source: /home/pi/printer_data/spoolman`.
-        target: /home/app/spoolman_bambu/client/dist # Do NOT modify this line
+      - .env:/home/app/spoolman_bambu/.env
       # - /Users/atownsend/repositories/github/spoolman-bambu-filiment-status/spoolman_bambu/spoolman_bambu/.env:/home/app/spoolman_bambu/.env
     ports:
       # Map the host machine's port 7912 to the container's port 8000

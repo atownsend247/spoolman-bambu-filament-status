@@ -26,7 +26,7 @@ Please see the [Spoolman](https://github.com/Donkie/Spoolman/tree/master) reposi
 * **Unit Test**: The unit tests and integration test coverage can definately be improved.
 * **Printer Alias**: Currently Printers are identified as their serial, should be updated to be a custom alias field
 * **Bambu MQTT**: Look at loop backoff intervals for failed connections
-* **Spoolman API**: Automated retries for failed API requests
+* **Spoolman API**: Automated retries for failed API requests, better error/response handling
 
 ### Awknowledgements
 * **: Heavily influenced by the [Spoolman](https://github.com/Donkie/Spoolman/tree/master) project (buy him a coffee!), written in the same language/structure as Spoolman and adding in multiple BambuLab printer support to the service via the printers internal MQTT server.
