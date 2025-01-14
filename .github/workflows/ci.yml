@@ -1,0 +1,284 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - master
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: atownsend247/spoolman-bambu-filament-status
+
+jobs:
+  #
+  # Linting
+  #
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.2.0
+        with:
+          python-version: "3.12"
+
+      - name: Install pre-commit
+        run: pip install pre-commit==3.3.3
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files
+  #
+  # Build the Spoolman Bambu Filament Status client for baking into the docker images
+  # This is done on native hardware to speed things up, vite is very slow on emulated hardware
+  #
+  build-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+
+      - name: Install node
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: '20'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.2.0
+        with:
+          python-version: "3.12"
+    
+      - name: Export requirements
+        run: |
+          pip install pdm
+          pdm export -o requirements.txt --without-hashes
+    
+      - name: Install client dependencies
+        run: |
+          cd client
+          npm ci
+
+      - name: Build
+        run: |
+          cd client
+          rm -f .env && echo "VITE_APIURL=/api/v1" > .env.production
+          npm run build
+
+      - name: Write build info
+        run: |
+          echo "GIT_COMMIT=$(git rev-parse --short HEAD)" > build.txt
+          echo "BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> build.txt
+  
+      # Remove client source and keep only the built dist
+      - name: Clean
+        run: |
+          mv client/dist dist
+          rm -rf client
+          mkdir client
+          mv dist client/dist
+          rm -rf .git
+          rm -rf .venv
+
+      - name: Fix permissions
+        run: |
+          chmod +x scripts/*.sh
+      
+      - name: Upload client Spoolman bambu artifact
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: client
+          path: client/dist
+
+      - name: Upload full Spoolman bambu artifact
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          include-hidden-files: true
+          name: spoolman-bambu-filament-status
+          path: .
+  
+  #
+  # Build arm64 image
+  # Don't run this for pull requests
+  # Only push to buildcache and let release job push to registry
+  #
+  build-arm64:
+    if: ${{ github.event_name != 'pull_request' }}
+    needs: [build-client]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+
+      - name: Download client
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: client
+          path: client/dist
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.2.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.6.1
+
+      - name: Log in to the Github Container registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and cache Docker image
+        uses: docker/build-push-action@v6.7.0
+        with:
+          context: .
+          platforms: linux/arm64
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache-arm64
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache-arm64,mode=max
+  #
+  # Build arm/v7 image
+  # Don't run this for pull requests
+  # Only push to buildcache and let release job push to registry
+  #
+  build-armv7:
+    if: ${{ github.event_name != 'pull_request' }}
+    needs: [build-client]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+
+      - name: Download client
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: client
+          path: client/dist
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.2.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.6.1
+
+      - name: Log in to the Github Container registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and cache Docker image
+        uses: docker/build-push-action@v6.7.0
+        with:
+          context: .
+          platforms: linux/arm/v7
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache-armv7
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache-armv7,mode=max
+  #
+  # Release image if tests pass
+  # Don't run this for pull requests
+  #
+  publish-images:
+    if: ${{ github.event_name != 'pull_request' }}
+    needs: [build-amd64, build-arm64, build-armv7, style, build-client]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+
+      - name: Download client
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: client
+          path: client/dist
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.2.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.6.1
+
+      - name: Log in to the Github Container registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=edge
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: Store git commit and build date
+        run: |
+          echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+          echo "BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v6.7.0
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            GIT_COMMIT
+            BUILD_DATE
+          cache-from: |
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache-amd64
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache-arm64
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache-armv7
+  #
+  # Create Github Release if CI was triggered by a tag
+  #
+  publish-release:
+    if: ${{ (github.event_name != 'pull_request') && startsWith(github.event.ref, 'refs/tags/v') }}
+    needs: [publish-images]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download built spoolman-bambu-filament-status
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: spoolman-bambu-filament-status
+          path: /tmp/spoolman-bambu-filament-status
+      
+      - name: Generate release info
+        run: |
+          cd /tmp/spoolman-bambu-filament-status
+          echo '{
+            "project_name": "Spoolman-Bambu-Filament-Status",
+            "project_owner": "atownsend247",
+            "version": "${{ github.ref_name }}"
+          }' > release_info.json
+
+      - name: Zip
+        run: |
+          cd /tmp/spoolman-bambu-filament-status
+          zip -r spoolman-bambu-filament-status.zip .
+
+      - name: Create release and upload build
+        uses: softprops/action-gh-release@v1
+        id: create-release
+        with:
+          draft: true
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          files: /tmp/spoolman-bambu-filament-status/spoolman-bambu-filament-status.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: "⚠️ TODO ⚠️"
+          
