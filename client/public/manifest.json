@@ -1,0 +1,22 @@
+{
+  "name": "Spoolman Bambu Filament Status",
+  "short_name": "Spoolman Bambu",
+  "description": "Sync your BambuLab AMS spools directly with Spoolman.",
+  "icons": [
+    {
+      "purpose": "maskable",
+      "sizes": "512x512",
+      "src": "icon512_maskable.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any",
+      "sizes": "512x512",
+      "src": "icon512_rounded.png",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#1F1F1F",
+  "theme_color": "#DC7734",
+  "display": "standalone"
+}

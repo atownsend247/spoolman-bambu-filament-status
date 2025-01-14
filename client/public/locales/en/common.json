@@ -1,0 +1,104 @@
+{
+    "actions": {
+        "list": "List",
+        "create": "Create",
+        "edit": "Edit",
+        "show": "Show",
+        "clone": "Clone"
+    },
+    "buttons": {
+        "create": "Create",
+        "save": "Save",
+        "saveAndAdd": "Save and Add",
+        "logout": "Log out",
+        "delete": "Delete",
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "confirm": "Are you sure?",
+        "continue": "Continue",
+        "filter": "Filter",
+        "clear": "Clear",
+        "refresh": "Refresh",
+        "show": "Show",
+        "undo": "Undo",
+        "import": "Import",
+        "clone": "Clone",
+        "archive": "Archive",
+        "unArchive": "Unarchive",
+        "hideArchived": "Hide Archived",
+        "showArchived": "Show Archived",
+        "notAccessTitle": "You don't have permission to access",
+        "hideColumns": "Hide Columns",
+        "clearFilters": "Clear Filters"
+    },
+    "warnWhenUnsavedChanges": "Are you sure you want to leave? You have unsaved changes.",
+    "notifications": {
+        "success": "Successful",
+        "error": "Error (status code: {{statusCode}})",
+        "undoable": "You have {{seconds}} seconds to undo.",
+        "createSuccess": "Successfully created {{resource}}",
+        "createError": "There was an error creating {{resource}} (status code: {{statusCode}})",
+        "deleteSuccess": "Successfully deleted {{resource}}",
+        "deleteError": "Error when deleting {{resource}} (status code: {{statusCode}})",
+        "editSuccess": "Successfully edited {{resource}}",
+        "editError": "Error when editing {{resource}} (status code: {{statusCode}})",
+        "importProgress": "Importing: {{processed}}/{{total}}",
+        "saveSuccessful": "Save successful!",
+        "validationError": "Validation error: {{error}}"
+    },
+    "kofi": "Tip me on Ko-fi",
+    "loading": "Loading",
+    "version": "Version",
+    "unknown": "Unknown",
+    "yes": "Yes",
+    "no": "No",
+    "tags": {
+        "clone": "Clone"
+    },
+    "dashboard": {
+        "title": "Dashboard"
+    },
+    "printer": {
+        "printer": "Printers",
+        "fields": {
+            "id": "ID",
+            "printer_id": "Serial",
+            "printer_ip": "IP Address",
+            "status": "Status",
+            "last_mqtt_message": "Last MQTT message",
+            "last_mqtt_ams_message": "Last AMS message",
+            "ams_unit_count": "AMS Units"
+        },
+        "titles": {
+            "list": "Printers",
+            "show_title": "[Printer #{{id}}] {{name}}"
+        }
+    },
+    "home": {
+        "home": "Home"
+    },
+    "help": {
+        "help": "Help",
+        "resources": {
+            "printer": "BambuLab printers that are connected to Spoolman via Spoolman Bambu."
+        },
+        "description": "<title>Help</title><p>Here are some tips to get you started.</p><p>Spoolman Bambu maintains the connection of each printer with the Spoolman instance:</p><itemsHelp/><p>To add a printer please refer to the project <readmeLink>Spoolman Bambu README</readmeLink>. Once that's done, restart Spoolman Bambu so the environment variables take affect.</p>"
+    },
+    "table": {
+        "actions": "Actions"
+    },
+    "documentTitle": {
+        "default": "Spoolman Bambu",
+        "suffix": " | Spoolman Bambu",
+        "home": {
+            "list": "Home | Spoolman Bambu"
+        },
+        "help": {
+            "list": "Help | Spoolman Bambu"
+        },
+        "printer": {
+            "list": "Printers | Spoolman Bambu",
+            "show": "#{{id}} Show Printer | Spoolman Bambu"
+        }
+    }
+}

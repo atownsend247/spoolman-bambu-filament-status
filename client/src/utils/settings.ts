@@ -1,0 +1,2 @@
+import { useGetSetting } from "./querySettings";
+
