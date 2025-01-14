@@ -1,0 +1,7 @@
+client/node_modules
+
+*.egg-info
+*.egg/
+*.pyc
+*.swp
+__pycache__

@@ -1,0 +1,112 @@
+[project]
+name = "spoolman-bambu-filament-status"
+version = "0.1.0"
+description = "A plugin for spoolman that syncs multiple BambuLab AMS data to spoolman"
+authors = [
+    { name = "andytownsend247", email = "hedgehogclose@outlook.com" },
+]
+dependencies = [
+    "uvicorn~=0.32.1",
+    "httptools>=0.6.4; platform_machine != \"armv7l\"",
+    "uvloop!=0.15.0,!=0.15.1,>=0.21.0; platform_machine != \"armv7l\" and sys_platform != \"win32\" and (sys_platform != \"cygwin\" and platform_python_implementation != \"PyPy\")",
+    "fastapi~=0.115.5",
+    "pydantic~=2.10.2",
+    "platformdirs~=4.3.6",
+    "scheduler~=0.8.7",
+    "asyncpg~=0.30",
+    "psycopg2-binary~=2.9",
+    "setuptools~=70.0.0",
+    "httpx~=0.28.0",
+    "hishel~=0.1.1",
+    "requests>=2.32.3",
+    "paho-mqtt>=2.1.0",
+    "WebSockets~=14.1",
+]
+requires-python = ">=3.9,<=3.12"
+
+[project.license]
+text = "MIT"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "ruff==0.4.4",
+    "black~=24.4.2",
+    "pre-commit~=3.7.1",
+    "pytest~=8.2.1",
+    "pytest-asyncio~=0.23.7",
+    "httpx~=0.28.0",
+]
+
+[tool.pdm.scripts.docs]
+call = "spoolman_bambu.docs:generate_docs"
+
+[tool.pdm.scripts.app]
+cmd = "uvicorn spoolman_bambu.main:app"
+
+[tool.pdm.scripts.itest]
+cmd = "python tests_integration/run.py"
+
+[tool.pdm.scripts.utest]
+cmd = "python tests_integration/run.py"
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "ALL",
+]
+ignore = [
+    "ANN101",
+    "A003",
+    "D101",
+    "D104",
+    "D203",
+    "D213",
+    "D406",
+    "D407",
+    "FA100",
+    "FIX002",
+    "S104",
+    "TRY201",
+    "TRY003",
+    "EM101",
+    "EM102",
+    "DTZ003",
+    "PLR0913",
+    "SIM108",
+    "TD002",
+    "TD003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests*/*" = [
+    "ANN201",
+    "S101",
+    "PLR2004",
+    "D103",
+    "TID252",
+]
+"migrations/versions/*" = [
+    "N999",
+]
+
+[tool.black]
+line-length = 120
+target-version = [
+    "py39",
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.pytest.ini_options]
+log_cli = true  
+log_level = "DEBUG"  
+log_format = "%(asctime)s %(levelname)s %(message)s"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+testpaths = ["tests_unit"]
