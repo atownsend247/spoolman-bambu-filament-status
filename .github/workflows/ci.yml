@@ -238,7 +238,7 @@ jobs:
   #
   publish-images:
     if: ${{ github.event_name != 'pull_request' }}
-    needs: [build-amd64, build-arm64, build-armv7, style, build-client]
+    needs: [build-amd64, style, build-client]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
