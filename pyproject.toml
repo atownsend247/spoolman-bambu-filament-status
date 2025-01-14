@@ -1,6 +1,6 @@
 [project]
 name = "spoolman-bambu-filament-status"
-version = "0.1.0"
+version = "0.2.0"
 description = "A plugin for spoolman that syncs multiple BambuLab AMS data to spoolman"
 authors = [
     { name = "andytownsend247", email = "hedgehogclose@outlook.com" },
