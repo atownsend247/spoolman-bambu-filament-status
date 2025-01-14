@@ -21,7 +21,7 @@ RUN groupmod -g 1000 users \
 ENV PATH="/home/app/.local/bin:${PATH}"
 
 # Copy and install dependencies
-COPY --chown=app:app .env /home/app/spoolman_bambu/.env
+# COPY --chown=app:app .env /home/app/spoolman_bambu/.env
 COPY --chown=app:app pyproject.toml /home/app/spoolman_bambu/
 COPY --chown=app:app pdm.lock /home/app/spoolman_bambu/
 WORKDIR /home/app/spoolman_bambu
