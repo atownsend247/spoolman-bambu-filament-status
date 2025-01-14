@@ -12,6 +12,26 @@ Spoolman is a self-hosted web service designed to help you efficiently manage yo
 
 Please see the [Spoolman](https://github.com/Donkie/Spoolman/tree/master) repository for more information.
 
+## Getting started with spoolman-bambu-filament-status
+
+By default this project provides some docker images that can be used on their own or with the included handy `docker-compose.yaml` file.
+
+### Using docker-compose / docker
+To get started the easiest way is to run or use the `docker-compose.yaml` file in this repo, if you already have a Spoolman instance running you can use the docker-compose.yaml as influence or disable the spoolman container in the compose file.
+
+Ensure you make a copy of the `.env.example` file (Call it `.env` so its picked up and mounted by the `docker-compose.yaml` file and change it to suit your requirements at a minimum the `SPOOLMAN_BAMBU_SPOOLMAN_HOST` and `SPOOLMAN_BAMBU_SPOOLMAN_PORT` should be set or the container will fail to start.
+
+### Configuring printers
+To configure a printer you need three bits of information which can be found easily on the printers front mounted display, these are; The local IP address of the printer, the printers serial number and the pairing pass code. More information for this can be found in the .env.example but the tl;dr; is the 3 properties prefixed with the printer id e.g. `SPOOLMAN_BAMBU_PRINTER_1` where 1 can be changed for any number of printers a full example can be found below.
+
+```bash
+# Printer 1
+SPOOLMAN_BAMBU_PRINTER_1_ID=01PXXAXXXXXXXXXXX
+SPOOLMAN_BAMBU_PRINTER_1_IP=192.168.1.4
+SPOOLMAN_BAMBU_PRINTER_1_CODE=YYYYYYYY
+```
+
+
 ### Features
 * **Filament Management**: Keeps synced with your BambuLab AMS units so you can track filament spool useage in Spoolman
 * **Multi-AMS Support**: Will handle the full set of 4 AMS units (Maximum supported) per printer connection
