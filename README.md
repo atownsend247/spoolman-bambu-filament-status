@@ -31,6 +31,49 @@ SPOOLMAN_BAMBU_PRINTER_1_IP=192.168.1.4
 SPOOLMAN_BAMBU_PRINTER_1_CODE=YYYYYYYY
 ```
 
+Once your `.env` is configured you can start the service and it should initiate the connection to spoolman and do some checks before connecting to the printers and you should see something similar in the logs as below:
+
+```
+User UID: 1000
+User GID: 1000
+Starting uvicorn...
+spoolman_bambu.main        WARNING  Running in debug mode, allowing all origins.
+uvicorn.error              INFO     Started server process [1]
+uvicorn.error              INFO     Started server process [1]
+uvicorn.error              INFO     Waiting for application startup.
+uvicorn.error              INFO     Waiting for application startup.
+spoolman_bambu.main        INFO     Starting Spoolman Plugin Bambu Filiment Status v0.1.0
+spoolman_bambu.main        INFO     Configuration:
+spoolman_bambu.main        INFO     Using data directory: /home/app/.local/share/spoolman_bambu
+spoolman_bambu.main        INFO     Using logs directory: /home/app/.local/share/spoolman_bambu
+spoolman_bambu.main        INFO     Using backups directory: /home/app/.local/share/spoolman_bambu/backups
+spoolman_bambu.main        INFO
+spoolman_bambu.spoolman.spoolman INFO     Spoolman instance configured: http://192.168.68.1:7912 disconnected
+spoolman_bambu.spoolman.spoolman INFO     Spoolman instance health: http://192.168.68.1:7912/api/v1/health connected
+spoolman_bambu.spoolman.spoolman INFO     Spoolman pre-flight checks starting...
+spoolman_bambu.spoolman.spoolman INFO     Spoolman Check Bambu Lab vendor is present...
+spoolman_bambu.spoolman.spoolman INFO     Spoolman Check Spoolman extra field tag[Tag] is present...
+spoolman_bambu.spoolman.spoolman INFO     Spoolman extra field tag[Tag] is found continue
+spoolman_bambu.spoolman.spoolman INFO     Spoolman external filaments: http://192.168.68.1:7912/api/v1/external/filament 200
+spoolman_bambu.spoolman.spoolman INFO     Spoolman external cached filaments count: 226
+spoolman_bambu.spoolman.spoolman INFO     Spoolman pre-flight checks completed
+spoolman_bambu.main        INFO     Found 2 printers in env configuration, initilising them now...
+spoolman_bambu.bambu.bambu INFO     Bambu printer instance 01PXXAXXXXXXXXXXX:192.168.68.2 configured: python-spoolman-bambu-01PXXAXXXXXXXXXXX::disconnected
+spoolman_bambu.bambu.bambu INFO     Bambu printer instance 01PXXAXXXXXXXXXXX:192.168.68.2 conecting...
+spoolman_bambu.bambu.bambu INFO     Bambu printer instance 01PXXAXXXXXXXXXXX:192.168.68.2 loop start... 0
+spoolman_bambu.bambu.bambu INFO     Bambu printer instance 01PXXAXXXXXXXXXXX:192.168.68.2 failed to connect.
+spoolman_bambu.bambu.bambu INFO     Bambu printer instance 01PYYAYYYYYYYYYYY:192.168.68.3 configured: python-spoolman-bambu-01PYYAYYYYYYYYYYY::disconnected
+spoolman_bambu.bambu.bambu INFO     Bambu printer instance 01PYYAYYYYYYYYYYY:192.168.68.3 conecting...
+spoolman_bambu.bambu.bambu INFO     Bambu printer instance 01PYYAYYYYYYYYYYY:192.168.68.3 loop start... 0
+spoolman_bambu.bambu.bambu INFO     Bambu printer instance 01PYYAYYYYYYYYYYY:192.168.68.3 on_connect broker 0
+spoolman_bambu.bambu.bambu INFO     Bambu printer instance 01PYYAYYYYYYYYYYY:192.168.68.3 conected to broker
+spoolman_bambu.main        INFO     2 printers initilised
+spoolman_bambu.task_scheduler INFO     Task: Scheduling Spoolman health check every 600 seconds.
+spoolman_bambu.main        INFO     Startup complete.
+uvicorn.error              INFO     Application startup complete.
+uvicorn.error              INFO     Application startup complete.
+
+```
 
 ### Features
 * **Filament Management**: Keeps synced with your BambuLab AMS units so you can track filament spool useage in Spoolman
