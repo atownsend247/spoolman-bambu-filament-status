@@ -48,8 +48,8 @@ async def health() -> models.HealthCheck:
     """Return a health check."""
     return models.HealthCheck(status="healthy")
 
+
 # Add routers
 app.include_router(info.router)
 app.include_router(printer.router)
 app.include_router(spoolman.router)
-

@@ -22,12 +22,11 @@ router = APIRouter(
     tags=["printer"],
 )
 
+
 @router.get(
     "",
     name="Find printers",
-    description=(
-        "Get a list of active printers"
-    ),
+    description=("Get a list of active printers"),
     response_model_exclude_none=True,
     responses={
         200: {"Printers": PrinterInfo},
@@ -38,9 +37,7 @@ async def printer() -> JSONResponse:
     active_printers = []
     printers = app_state.get_printers()
     for index, printer in enumerate(printers):
-        active_printers.append(
-            get_printer_info(index + 1, printer)
-        )
+        active_printers.append(get_printer_info(index + 1, printer))
 
     # Set x-total-count header for pagination
     return JSONResponse(
@@ -49,6 +46,7 @@ async def printer() -> JSONResponse:
         ),
         headers={"x-total-count": str(len(active_printers))},
     )
+
 
 @router.websocket(
     "",
@@ -66,6 +64,7 @@ async def notify_any(
                 await websocket.send_json({"status": "healthy"})
     except WebSocketDisconnect:
         websocket_manager.disconnect(("printer",), websocket)
+
 
 @router.get(
     "/{printer_id}",
@@ -85,10 +84,11 @@ async def get(
     for index, printer in enumerate(printers):
         if index == (printer_id - 1):
             active_printer = get_printer_info(index + 1, printer)
-    
+
     if active_printer is not None:
         return active_printer
-    
+
+
 @router.websocket(
     "/{printer_id}",
     name="Listen to spool changes",
@@ -106,6 +106,7 @@ async def notify(
                 await websocket.send_json({"status": "healthy"})
     except WebSocketDisconnect:
         websocket_manager.disconnect(("printer", str(printer_id)), websocket)
+
 
 def get_printer_info(index, printer) -> PrinterInfo:
     return PrinterInfo(

@@ -7,6 +7,7 @@ from spoolman_bambu.task_scheduler import get_spoolman_sync_interval
 # Set Logging
 logging.basicConfig(level=logging.BASIC_FORMAT)
 
+
 def test_get_spoolman_sync_interval_default() -> None:
     """
     Test get_spoolman_sync_interval function with default
@@ -14,6 +15,7 @@ def test_get_spoolman_sync_interval_default() -> None:
     """
     response = get_spoolman_sync_interval()
     assert response == 600
+
 
 def test_get_spoolman_sync_interval_env_var() -> None:
     """

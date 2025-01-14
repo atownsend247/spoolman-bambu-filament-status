@@ -7,6 +7,7 @@ from spoolman_bambu import env, state
 
 logger = logging.getLogger(__name__)
 
+
 class Spoolman:
     def __init__(self, timeout=5):
         """
@@ -21,11 +22,7 @@ class Spoolman:
         self.external_bambu_spools = None
         self.vendor_id = None
 
-        logger.info(
-            "Spoolman instance configured: %s %s", 
-            self.base_url,
-            self.status
-        )
+        logger.info("Spoolman instance configured: %s %s", self.base_url, self.status)
 
     def initialise(self):
         logger.info("Spoolman pre-flight checks starting...")
@@ -47,247 +44,136 @@ class Spoolman:
         """
         url = f"{self.base_url}/api/v1/health"
         try:
-            response = requests.get(
-                url, 
-                timeout=self.timeout
-            )
+            response = requests.get(url, timeout=self.timeout)
             response_time = response.elapsed.total_seconds()
-            
+
             self.set_last_status_check(timestamp)
             if response.status_code == 200:
-                
+
                 status_message = "Healthy"
                 self.status = "connected"
-                logger.info(
-                    "Spoolman instance health: %s %s", 
-                    url,
-                    self.status
-                )
+                logger.info("Spoolman instance health: %s %s", url, self.status)
             else:
                 status_message = f"Unhealthy (Status Code: {response.status_code})"
                 logger.error(
-                    "Spoolman instance health: %s %s", 
+                    "Spoolman instance health: %s %s",
                     url,
                     self.status,
                 )
 
         except requests.exceptions.RequestException as e:
-            return {
-                "status_code": None,
-                "response_time": None,
-                "status_message": f"Error: {str(e)}"
-            }
+            return {"status_code": None, "response_time": None, "status_message": f"Error: {str(e)}"}
 
     def get_vendors(self):
         url = f"{self.base_url}/api/v1/vendor"
         try:
-            response = requests.get(
-                url, 
-                timeout=self.timeout
-            )
+            response = requests.get(url, timeout=self.timeout)
             if response.status_code == 200:
                 return response.json()
             else:
-                logger.error(
-                    "Spoolman vendors: %s %s", 
-                    url,
-                    response.status_code
-                )
+                logger.error("Spoolman vendors: %s %s", url, response.status_code)
 
         except requests.exceptions.RequestException as e:
-            return {
-                "status_code": None,
-                "status_message": f"Error: {str(e)}"
-            }
+            return {"status_code": None, "status_message": f"Error: {str(e)}"}
 
     def get_fields(self, entity_type):
         url = f"{self.base_url}/api/v1/field/{entity_type}"
         try:
-            response = requests.get(
-                url, 
-                timeout=self.timeout
-            )
+            response = requests.get(url, timeout=self.timeout)
             if response.status_code == 200:
                 return response.json()
             else:
-                logger.error(
-                    "Spoolman field %s: %s %s", 
-                    entity_type,
-                    url,
-                    response.status_code
-                )
+                logger.error("Spoolman field %s: %s %s", entity_type, url, response.status_code)
 
         except requests.exceptions.RequestException as e:
-            return {
-                "status_code": None,
-                "status_message": f"Error: {str(e)}"
-            }
+            return {"status_code": None, "status_message": f"Error: {str(e)}"}
 
     def get_spools(self):
         url = f"{self.base_url}/api/v1/spool"
         try:
-            response = requests.get(
-                url, 
-                timeout=self.timeout
-            )
+            response = requests.get(url, timeout=self.timeout)
             if response.status_code == 200:
                 return response.json()
             else:
-                logger.error(
-                    "Spoolman spools: %s %s", 
-                    url,
-                    response.status_code
-                )
+                logger.error("Spoolman spools: %s %s", url, response.status_code)
 
         except requests.exceptions.RequestException as e:
-            return {
-                "status_code": None,
-                "status_message": f"Error: {str(e)}"
-            }
+            return {"status_code": None, "status_message": f"Error: {str(e)}"}
 
     def patch_spool(self, spool_id, spool_data):
         url = f"{self.base_url}/api/v1/spool/{spool_id}"
         # logger.info("Patch spool %s: %s", spool_id, json.dumps(spool_data))
         try:
-            response = requests.patch(
-                url, 
-                json=spool_data,
-                timeout=self.timeout
-            )
+            response = requests.patch(url, json=spool_data, timeout=self.timeout)
             if response.status_code == 200:
                 return response.json()
             else:
-                logger.error(
-                    "Spoolman spools: %s %s %s", 
-                    url,
-                    response.status_code,
-                    response.json()
-                )
+                logger.error("Spoolman spools: %s %s %s", url, response.status_code, response.json())
                 return None
 
         except requests.exceptions.RequestException as e:
-            return {
-                "status_code": None,
-                "status_message": f"Error: {str(e)}"
-            }
-    
+            return {"status_code": None, "status_message": f"Error: {str(e)}"}
+
     def create_spool(self, spool_data):
         url = f"{self.base_url}/api/v1/spool"
         logger.info("Create spool %s", json.dumps(spool_data))
         try:
-            response = requests.post(
-                url, 
-                json=spool_data,
-                timeout=self.timeout
-            )
+            response = requests.post(url, json=spool_data, timeout=self.timeout)
             if response.status_code == 200:
                 return response.json()
             else:
-                logger.error(
-                    "Spoolman create spool: %s %s %s", 
-                    url,
-                    response.status_code,
-                    response.json()
-                )
+                logger.error("Spoolman create spool: %s %s %s", url, response.status_code, response.json())
                 return None
 
         except requests.exceptions.RequestException as e:
-            return {
-                "status_code": None,
-                "status_message": f"Error: {str(e)}"
-            }
+            return {"status_code": None, "status_message": f"Error: {str(e)}"}
 
     def get_internal_filament(self):
         url = f"{self.base_url}/api/v1/filament"
         try:
-            response = requests.get(
-                url, 
-                timeout=self.timeout
-            )
+            response = requests.get(url, timeout=self.timeout)
             if response.status_code == 200:
-                logger.info(
-                    "Spoolman filaments: %s %s", 
-                    url,
-                    response.status_code
-                )
+                logger.info("Spoolman filaments: %s %s", url, response.status_code)
                 return response.json()
             else:
-                logger.error(
-                    "Spoolman filaments: %s %s", 
-                    url,
-                    response.status_code
-                )
+                logger.error("Spoolman filaments: %s %s", url, response.status_code)
 
         except requests.exceptions.RequestException as e:
-            return {
-                "status_code": None,
-                "status_message": f"Error: {str(e)}"
-            }
+            return {"status_code": None, "status_message": f"Error: {str(e)}"}
 
     def create_internal_filament(self, filament_data):
         url = f"{self.base_url}/api/v1/filament"
         logger.info(f"Spoolman Creating Spoolman internal filament...")
 
         try:
-            response = requests.post(
-                url, 
-                json=filament_data,
-                timeout=self.timeout
-            )
+            response = requests.post(url, json=filament_data, timeout=self.timeout)
 
             if response.status_code == 200:
-                logger.info(
-                    "Spoolman create internal filament: %s %s", 
-                    url,
-                    response.status_code
-                )
+                logger.info("Spoolman create internal filament: %s %s", url, response.status_code)
                 logger.info(f"Spoolman create internal filament: {response.json()}")
                 return response.json()
             else:
-                logger.error(
-                    "Spoolman create internal filament: %s %s %s", 
-                    url,
-                    response.status_code,
-                    response.json()
-                )
-
+                logger.error("Spoolman create internal filament: %s %s %s", url, response.status_code, response.json())
 
         except requests.exceptions.RequestException as e:
-            return {
-                "status_code": None,
-                "status_message": f"Error: {str(e)}"
-            } 
+            return {"status_code": None, "status_message": f"Error: {str(e)}"}
 
     def get_external_filament(self):
         url = f"{self.base_url}/api/v1/external/filament"
         # If this is not cached go and fetch it
         if self.external_bambu_spools is None:
             try:
-                response = requests.get(
-                    url, 
-                    timeout=self.timeout
-                )
+                response = requests.get(url, timeout=self.timeout)
                 if response.status_code == 200:
-                    logger.info(
-                        "Spoolman external filaments: %s %s", 
-                        url,
-                        response.status_code
-                    )
+                    logger.info("Spoolman external filaments: %s %s", url, response.status_code)
                     self.external_bambu_spools = cache_external_filaments(response.json())
 
                     return self.external_bambu_spools
                 else:
-                    logger.error(
-                        "Spoolman external filaments: %s %s", 
-                        url,
-                        response.status_code
-                    )
+                    logger.error("Spoolman external filaments: %s %s", url, response.status_code)
 
             except requests.exceptions.RequestException as e:
-                return {
-                    "status_code": None,
-                    "status_message": f"Error: {str(e)}"
-                }
+                return {"status_code": None, "status_message": f"Error: {str(e)}"}
         # Otherwise just return the pre-filtered cache
         else:
             return self.external_bambu_spools
@@ -309,44 +195,23 @@ class Spoolman:
         else:
             logger.info(f"Spoolman extra field tag[{spoolmanCustomTag}] is found continue")
 
-
     def create_extra_field(self):
         spoolmanCustomTag = env.get_spoolman_tag()
         url = f"{self.base_url}/api/v1/field/spool/tag"
         logger.info(f"Spoolman Creating Spoolman extra field tag[{spoolmanCustomTag}] ...")
 
         try:
-            response = requests.post(
-                url, 
-                json={
-                    "name": spoolmanCustomTag,
-                    "field_type": "text"
-                },
-                timeout=self.timeout
-            )
+            response = requests.post(url, json={"name": spoolmanCustomTag, "field_type": "text"}, timeout=self.timeout)
 
             if response.status_code == 200:
-                logger.info(
-                    "Spoolman extra tag: %s %s", 
-                    url,
-                    response.status_code
-                )
+                logger.info("Spoolman extra tag: %s %s", url, response.status_code)
                 logger.info(f"Spoolman extra field tag: {spoolmanCustomTag} successfully created")
                 return response.json()
             else:
-                logger.error(
-                    "Spoolman extra tag: %s %s %s", 
-                    url,
-                    response.status_code,
-                    response.json()
-                )
-
+                logger.error("Spoolman extra tag: %s %s %s", url, response.status_code, response.json())
 
         except requests.exceptions.RequestException as e:
-            return {
-                "status_code": None,
-                "status_message": f"Error: {str(e)}"
-            } 
+            return {"status_code": None, "status_message": f"Error: {str(e)}"}
 
     def check_and_set_vendor(self):
         logger.info("Spoolman Check Bambu Lab vendor is present...")
@@ -369,35 +234,19 @@ class Spoolman:
         url = f"{self.base_url}/api/v1/vendor"
         try:
             response = requests.post(
-                url, 
-                json={
-                    "name": "Bambu Lab",
-                    "external_id": "Bambu Lab",
-                    "empty_spool_weight": 250
-                },
-                timeout=self.timeout
+                url,
+                json={"name": "Bambu Lab", "external_id": "Bambu Lab", "empty_spool_weight": 250},
+                timeout=self.timeout,
             )
 
             if response.status_code == 200:
-                logger.info(
-                    "Spoolman create vendor: %s %s", 
-                    url,
-                    response.status_code
-                )
+                logger.info("Spoolman create vendor: %s %s", url, response.status_code)
                 return response.json()
             else:
-                logger.error(
-                    "Spoolman external filaments: %s %s %s", 
-                    url,
-                    response.status_code
-                )
-
+                logger.error("Spoolman external filaments: %s %s %s", url, response.status_code)
 
         except requests.exceptions.RequestException as e:
-            return {
-                "status_code": None,
-                "status_message": f"Error: {str(e)}"
-            } 
+            return {"status_code": None, "status_message": f"Error: {str(e)}"}
 
     def get_last_status_check(self):
         return self.last_status_check
@@ -406,14 +255,11 @@ class Spoolman:
         self.last_status_check = timestamp
 
 
-def cache_external_filaments(filaments, prefix = "bambulab_"):
+def cache_external_filaments(filaments, prefix="bambulab_"):
     bambu_filaments = []
     for filament in filaments:
         if filament["id"].startswith(prefix):
             bambu_filaments.append(filament)
 
-    logger.info(
-        "Spoolman external cached filaments count: %s", 
-        len(bambu_filaments)
-    )
+    logger.info("Spoolman external cached filaments count: %s", len(bambu_filaments))
     return bambu_filaments

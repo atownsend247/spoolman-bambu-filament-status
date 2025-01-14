@@ -107,6 +107,7 @@ def add_file_logging() -> None:
     file_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(message)s", "%Y-%m-%d %H:%M:%S"))
     root_logger.addHandler(file_handler)
 
+
 def initialise_spoolman() -> None:
     """Initialise Spoolman connection and instance."""
     # Initialise spoolman
@@ -117,6 +118,7 @@ def initialise_spoolman() -> None:
     # Get the initial state of the spools
     app_state.set_spoolman_spools(spoolman.get_spools())
 
+
 def initialise_printers() -> None:
     """Initialise printers connection and instance."""
     printers = env.get_all_printer_env_vars()
@@ -124,15 +126,9 @@ def initialise_printers() -> None:
 
     if len(printers) == 0:
         logger.warning("No printers configured via env variables, please see project readme...")
-        
+
     for printer in printers:
-        app_state.add_printer(
-            Bambu(
-                printer.printer_id, 
-                printer.printer_ip, 
-                printer.printer_code
-            )
-        )
+        app_state.add_printer(Bambu(printer.printer_id, printer.printer_ip, printer.printer_code))
     logger.info(f"{len(printers)} printers initilised")
 
 
@@ -166,6 +162,7 @@ async def startup() -> None:
     # externaldb.schedule_tasks(schedule)
 
     logger.info("Startup complete.")
+
 
 @app.on_event("shutdown")
 async def shutdown() -> None:

@@ -16,19 +16,14 @@ class StateTracker:
         self._printers = []
         self._spools = None
 
-        logger.info(
-            "State instance configured"
-        )
+        logger.info("State instance configured")
 
     def set_spoolman(self, spoolman):
         self._spoolman = spoolman
 
-    
     def get_spoolman(self):
         if self._spoolman is None:
-            logger.warning(
-                "Spoolman state is not initialised"
-            )
+            logger.warning("Spoolman state is not initialised")
         else:
             return self._spoolman
 
@@ -38,9 +33,9 @@ class StateTracker:
             for i, item in enumerate(self._printers):
                 if item == printer:
                     mylist[i] = printer
-        else: 
+        else:
             self._printers.append(printer)
-    
+
     def get_printers(self):
         return self._printers
 
@@ -49,8 +44,6 @@ class StateTracker:
 
     def get_spoolman_spools(self):
         if self._spools is None:
-            logger.warning(
-                "Spoolman Spools state is not initialised"
-            )
+            logger.warning("Spoolman Spools state is not initialised")
         else:
             return self._spools

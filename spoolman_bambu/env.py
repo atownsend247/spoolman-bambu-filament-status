@@ -19,6 +19,7 @@ from spoolman_bambu.api.v1.models import PrinterConfig
 
 logger = logging.getLogger(__name__)
 
+
 def get_logging_level() -> int:
     """Get the logging level from environment variables.
 
@@ -109,6 +110,7 @@ def get_logs_dir() -> Path:
     logs_dir.mkdir(parents=True, exist_ok=True)
     return logs_dir
 
+
 def get_spoolman_bambu_host() -> str:
     env_spoolman_ip = os.getenv("SPOOLMAN_BAMBU_HOST")
     if env_spoolman_ip is not None:
@@ -116,6 +118,7 @@ def get_spoolman_bambu_host() -> str:
     raise ValueError(
         f"Failed to parse SPOOLMAN_BAMBU_HOST variable: Unknown automatic backup '{env_spoolman_ip}'.",
     )
+
 
 def get_spoolman_bambu_port() -> str:
     env_spoolman_port = os.getenv("SPOOLMAN_BAMBU_PORT")
@@ -125,6 +128,7 @@ def get_spoolman_bambu_port() -> str:
         f"Failed to parse SPOOLMAN_BAMBU_PORT variable: Unknown automatic backup '{env_spoolman_port}'.",
     )
 
+
 def get_spoolman_ip() -> str:
     env_spoolman_ip = os.getenv("SPOOLMAN_BAMBU_SPOOLMAN_IP")
     if env_spoolman_ip is not None:
@@ -132,6 +136,7 @@ def get_spoolman_ip() -> str:
     raise ValueError(
         f"Failed to parse SPOOLMAN_BAMBU_SPOOLMAN_IP variable: Unknown automatic backup '{env_spoolman_ip}'.",
     )
+
 
 def get_spoolman_port() -> str:
     env_spoolman_port = os.getenv("SPOOLMAN_BAMBU_SPOOLMAN_PORT")
@@ -141,6 +146,7 @@ def get_spoolman_port() -> str:
         f"Failed to parse SPOOLMAN_BAMBU_SPOOLMAN_PORT variable: Unknown automatic backup '{env_spoolman_port}'.",
     )
 
+
 def get_spoolman_tag() -> str:
     env_spoolman_tag = os.getenv("SPOOLMAN_BAMBU_SPOOLMAN_TAG")
     if env_spoolman_tag is not None:
@@ -148,6 +154,7 @@ def get_spoolman_tag() -> str:
     else:
         # Return the default value
         return "Tag"
+
 
 def get_backups_dir() -> Path:
     """Get the backups directory.
@@ -290,6 +297,7 @@ def is_data_dir_mounted() -> bool:
     data_dir = str(get_data_dir().resolve())
     return any(data_dir in line for line in mounts.stdout.splitlines())
 
+
 def convert_id_to_char(id) -> str:
     # TODO: Make better
     if id == "0":
@@ -318,6 +326,7 @@ def get_base_path() -> str:
     # Ensure it starts with / and does not end with /
     return "/" + path.strip("/")
 
+
 def get_all_printer_env_vars() -> list[PrinterConfig]:
     prefix_check = "SPOOLMAN_BAMBU_PRINTER_"
     all_env_vars = os.environ.items()
@@ -337,9 +346,7 @@ def get_all_printer_env_vars() -> list[PrinterConfig]:
     for index, printer_env in collected_vars.items():
         try:
             printer_config = PrinterConfig(
-                printer_id=printer_env["id"],
-                printer_ip=printer_env["ip"],
-                printer_code=printer_env["code"]
+                printer_id=printer_env["id"], printer_ip=printer_env["ip"], printer_code=printer_env["code"]
             )
             processed_list.append(printer_config)
         except KeyError as e:
@@ -348,5 +355,3 @@ def get_all_printer_env_vars() -> list[PrinterConfig]:
             logger.error(f"Failed configuring printer [{index}]:{json.dumps(e.errors()[0])}")
 
     return processed_list
-
-    

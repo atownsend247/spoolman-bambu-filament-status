@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from spoolman_bambu import env, state
 from spoolman_bambu.api.v1.models import Spool
+
 # from spoolman.extra_fields import EntityType, get_extra_fields, validate_extra_field_dict
 
 logger = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ router = APIRouter(
     prefix="/spoolman",
     tags=["spoolman"],
 )
+
 
 @router.get(
     "/spools",

@@ -1,4 +1,5 @@
 """Pydantic data models for typing the FastAPI request/responses."""
+
 import logging
 
 from datetime import datetime, timezone
@@ -8,6 +9,7 @@ from typing import Annotated, Literal, Optional
 from pydantic import BaseModel, Field, PlainSerializer
 
 logger = logging.getLogger(__name__)
+
 
 def datetime_to_str(dt: datetime) -> str:
     """Convert a datetime object to a string."""
@@ -22,6 +24,7 @@ SpoolmanDateTime = Annotated[datetime, PlainSerializer(datetime_to_str)]
 class Message(BaseModel):
     message: str = Field()
 
+
 class PrinterInfo(BaseModel):
     # Don't include printer code in here, for safety sake
     id: int = Field(examples=["unique id"])
@@ -30,8 +33,9 @@ class PrinterInfo(BaseModel):
     status: str = Field(examples=["connected"])
     ams_unit_count: Optional[int] = Field(examples=["2"])
     ams_active_spools_count: Optional[int] = Field(examples=["3"])
-    last_mqtt_message: Optional[SpoolmanDateTime] = Field(examples=["null","2025-01-09T16:17:12.081846Z"])
+    last_mqtt_message: Optional[SpoolmanDateTime] = Field(examples=["null", "2025-01-09T16:17:12.081846Z"])
     last_mqtt_ams_message: Optional[SpoolmanDateTime] = Field(examples=["null", "2025-01-09T16:17:12.081846Z"])
+
 
 class Info(BaseModel):
     version: str = Field(examples=["0.7.0"])
@@ -41,21 +45,25 @@ class Info(BaseModel):
     logs_dir: str = Field(examples=["/home/app/.local/share/spoolman"])
     backups_dir: str = Field(examples=["/home/app/.local/share/spoolman/backups"])
     spoolman_connected: str = Field(examples=[True])
-    spoolman_last_status_check: Optional[SpoolmanDateTime] = Field(examples=["null","2025-01-09T16:17:12.081846Z"])
+    spoolman_last_status_check: Optional[SpoolmanDateTime] = Field(examples=["null", "2025-01-09T16:17:12.081846Z"])
+
 
 class HealthCheck(BaseModel):
     status: str = Field(examples=["healthy"])
+
 
 class PrinterConfig(BaseModel):
     printer_id: str = Field(examples=["X1PXXAXXXXXXXXX"])
     printer_ip: str = Field(examples=["192.168.0.1"])
     printer_code: str = Field(examples=["XXXXXXXX"])
 
+
 class MultiColorDirection(Enum):
     """Enum for multi-color direction."""
 
     COAXIAL = "coaxial"
     LONGITUDINAL = "longitudinal"
+
 
 class Vendor(BaseModel):
     id: int = Field(description="Unique internal ID of this vendor.")
@@ -87,6 +95,7 @@ class Vendor(BaseModel):
             "Query the /fields endpoint for more details about the fields."
         ),
     )
+
 
 class Filament(BaseModel):
     id: int = Field(description="Unique internal ID of this filament type.")
@@ -186,6 +195,7 @@ class Filament(BaseModel):
         ),
     )
 
+
 class Spool(BaseModel):
     id: int = Field(description="Unique internal ID of this spool of filament.")
     registered: SpoolmanDateTime = Field(description="When the spool was registered in the database. UTC Timezone.")
@@ -269,7 +279,6 @@ class Spool(BaseModel):
             "Query the /fields endpoint for more details about the fields."
         ),
     )
-
 
 
 class EventType(str, Enum):
